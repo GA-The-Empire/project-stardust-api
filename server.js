@@ -39,12 +39,9 @@ const app = express()
 
 // Acquire http for socket.io
 // Acquire socket.io from http
-const http = require('http').createServer(app)
 const socket = require('socket.io')
 const io = socket()
 io.listen(app.listen(8000))
-
-
 
 // set CORS headers on response from this API using the `cors` NPM package
 // `CLIENT_ORIGIN` is an environment variable that will be set on Heroku
@@ -99,10 +96,9 @@ io.on('connection', (socket) => {
 app.use(errorHandler)
 
 // run API on designated port (4741 in this case)
-app.listen(serverDevPort, () => {
-  console.log('listening on port ' + serverDevPort)
+app.listen(port, () => {
+  console.log('listening on port ' + port)
 })
-
 
 // needed for testing
 module.exports = app
