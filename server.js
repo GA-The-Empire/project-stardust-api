@@ -42,6 +42,8 @@ const app = express()
 const http = require('http').createServer(app)
 const socket = require('socket.io')
 const io = socket()
+io.listen(app.listen(8000))
+
 
 
 // set CORS headers on response from this API using the `cors` NPM package
@@ -101,9 +103,6 @@ app.listen(serverDevPort, () => {
   console.log('listening on port ' + serverDevPort)
 })
 
-http.listen(clientDevPort, () => {
-  console.log('listening on port ' + clientDevPort)
-})
 
 // needed for testing
 module.exports = app
