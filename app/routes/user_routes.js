@@ -44,6 +44,7 @@ router.post('/sign-up', (req, res, next) => {
     .then(hash => {
       // return necessary params to create a user
       return {
+        userName: req.body.credentials.userName,
         email: req.body.credentials.email,
         hashedPassword: hash
       }
@@ -128,6 +129,26 @@ router.patch('/change-password', requireToken, (req, res, next) => {
     // pass any errors along to the error handler
     .catch(next)
 })
+
+// CHANGE username
+// PATCH /change-username
+router.patch('/change-username', requireToken, (req, res, next) => {
+  // `req.user` will be determined by decoding the token payload
+  User.findById(req.user.id)
+    // returns user object
+    .then(function(user) {
+      user.userName = req.body.credentials.userName
+      return user.save()
+    })
+    // returns user w/ new username
+    .then(user => {
+      // return status 201, the email, and the new token
+      res.status(201).json({ user: user.toObject() })
+    })
+    // pass any errors along to the error handler
+    .catch(next)
+})
+
 
 router.delete('/sign-out', requireToken, (req, res, next) => {
   // create a new random token for the user, invalidating the current one
