@@ -7,6 +7,7 @@ const cors = require('cors')
 const exampleRoutes = require('./app/routes/example_routes')
 const userRoutes = require('./app/routes/user_routes')
 const uploadRoutes = require('./app/routes/upload_routes')
+const chatRoutes = require('./app/routes/chat_routes')
 
 // require middleware
 const errorHandler = require('./lib/error_handler')
@@ -39,7 +40,9 @@ const app = express()
 // Acquire http for socket.io
 // Acquire socket.io from http
 const http = require('http').createServer(app)
-const io = require('socket.io')(http)
+const socket = require('socket.io')
+const io = socket()
+
 
 // set CORS headers on response from this API using the `cors` NPM package
 // `CLIENT_ORIGIN` is an environment variable that will be set on Heroku
@@ -70,6 +73,7 @@ app.use(requestLogger)
 app.use(exampleRoutes)
 app.use(userRoutes)
 app.use(uploadRoutes)
+app.use(chatRoutes)
 
 // Display when a user connects and disconnects
 io.on('connection', (socket) => {
@@ -81,8 +85,9 @@ io.on('connection', (socket) => {
 
 // Emit message to all users on chat message
 io.on('connection', (socket) => {
-  socket.on('chat message', (msg) => {
-    io.emit('chat message', msg)
+  socket.emit('your id', socket.id)
+  socket.on('send message', (msg) => {
+    io.emit('message', msg)
   })
 })
 
@@ -92,8 +97,12 @@ io.on('connection', (socket) => {
 app.use(errorHandler)
 
 // run API on designated port (4741 in this case)
-app.listen(port, () => {
-  console.log('listening on port ' + port)
+app.listen(serverDevPort, () => {
+  console.log('listening on port ' + serverDevPort)
+})
+
+http.listen(clientDevPort, () => {
+  console.log('listening on port ' + clientDevPort)
 })
 
 // needed for testing
