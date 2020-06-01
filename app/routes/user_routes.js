@@ -136,7 +136,7 @@ router.patch('/change-username', requireToken, (req, res, next) => {
   // `req.user` will be determined by decoding the token payload
   User.findById(req.user.id)
     // returns user object
-    .then(function(user) {
+    .then(function (user) {
       user.userName = req.body.credentials.userName
       return user.save()
     })
@@ -148,7 +148,6 @@ router.patch('/change-username', requireToken, (req, res, next) => {
     // pass any errors along to the error handler
     .catch(next)
 })
-
 
 router.delete('/sign-out', requireToken, (req, res, next) => {
   // create a new random token for the user, invalidating the current one

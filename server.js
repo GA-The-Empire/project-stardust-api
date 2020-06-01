@@ -36,6 +36,11 @@ mongoose.connect(db, {
 // instantiate express application object
 const app = express()
 
+// Acquire http for socket.io
+// Acquire socket.io from http
+const http = require('http').createServer(app)
+const io = require('socket.io')(http)
+
 // set CORS headers on response from this API using the `cors` NPM package
 // `CLIENT_ORIGIN` is an environment variable that will be set on Heroku
 app.use(cors({ origin: process.env.CLIENT_ORIGIN || `http://localhost:${clientDevPort}` }))
@@ -65,6 +70,21 @@ app.use(requestLogger)
 app.use(exampleRoutes)
 app.use(userRoutes)
 app.use(uploadRoutes)
+
+// Display when a user connects and disconnects
+io.on('connection', (socket) => {
+  console.log('a user connected')
+  socket.on('disconnect', () => {
+    console.log('user disconnected')
+  })
+})
+
+// Emit message to all users on chat message
+io.on('connection', (socket) => {
+  socket.on('chat message', (msg) => {
+    io.emit('chat message', msg)
+  })
+})
 
 // register error handling middleware
 // note that this comes after the route middlewares, because it needs to be
