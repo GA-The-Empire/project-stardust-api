@@ -28,10 +28,13 @@ const router = express.Router()
 // CREATE PROFILE
 router.post('/profile', requireToken, (req, res, next) => {
   // const profile = req.body.user.profile
-  console.log(req.body.user)
+  console.log('req.body.user: ', req.body.user)
   User.findById(req.user.id)
     .then(user => {
-      user.profile = req.body.prodile
+      console.log('user: ', user)
+      user.profile = req.body.user.profile
+      console.log('user.profile: ', user.profile)
+      // user.profile.save()
       return user.save()
     })
     .then(profile => res.status(201).json({ profile: profile.toObject() }))
@@ -42,18 +45,18 @@ router.post('/profile', requireToken, (req, res, next) => {
 router.get('/profile/:id', (req, res, next) => {
   const id = req.params.id
   User.findById(id)
-    .then(user => res.json({ user: user.toObject() }))
+    .then(user => res.json({ profile: user.profile.toObject() }))
     .catch(next)
 })
 
 // UPDATE PROFILE
 router.patch('/profile/:id', (req, res, next) => {
   const id = req.params.id
-  const personData = req.body.person
-  Person.findById(id)
-    .then(person => {
-      Object.assign(person, personData)
-      return person.save()
+  const profileData = req.body.user.profile
+  User.findById(id)
+    .then(user => {
+      Object.assign(user.profile, profileData)
+      return user.save()
     })
     .then(() => res.sendStatus(204))
     .catch(next)
@@ -62,8 +65,18 @@ router.patch('/profile/:id', (req, res, next) => {
 // DESTROY PROFILE
 router.delete('/profile/:id', (req, res, next) => {
   const id = req.params.id
+  const blankProfile = {
+    about: '',
+    avatarUrl: '',
+    quote: '',
+    rank: '',
+    website: ''
+  }
   User.findById(id)
-    .then(people => people.deleteOne())
+    .then(user => {
+      user.profile = blankProfile
+      return user.save()
+    })
     .then(() => res.sendStatus(204))
     // on error respond with 500 and error message
     .catch(next)
