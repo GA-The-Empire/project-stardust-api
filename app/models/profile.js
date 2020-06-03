@@ -2,21 +2,25 @@ const mongoose = require('mongoose')
 
 const profileSchema = new mongoose.Schema({
   about: {
-    type: String
+    type: String,
+    default: ''
   },
   avatarUrl: {
-    type: String
+    type: String,
+    default: ''
   },
   quote: {
-    type: String
+    type: String,
+    default: ''
   },
   rank: {
-    type: String
+    type: String,
+    default: ''
   },
   website: {
-    type: String
-  },
-  token: String
+    type: String,
+    default: ''
+  }
 }, {
   timestamps: true
 })
