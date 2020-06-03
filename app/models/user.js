@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const profileSchema = require('./profile')
 
 const userSchema = new mongoose.Schema({
   email: {
@@ -14,6 +15,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  profile: profileSchema,
   token: String
 }, {
   timestamps: true,
