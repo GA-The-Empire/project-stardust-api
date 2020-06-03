@@ -72,19 +72,18 @@ app.use(exampleRoutes)
 app.use(userRoutes)
 app.use(uploadRoutes)
 
-// Display when a user connects and disconnects
-io.on('connection', (socket) => {
-  console.log('a user connected')
-  socket.on('disconnect', () => {
-    console.log('user disconnected')
-  })
-})
-
 // Emit message to all users on chat message
 io.on('connection', (socket) => {
   socket.emit('your id', socket.id)
+
+  socket.on('connection', () => {
+    io.emit('connection', { body: 'a user has connected' })
+  })
   socket.on('send message', (msg) => {
     io.emit('message', msg)
+  })
+  socket.on('disconnect', (socket) => {
+    socket.broadcast.emit('disconnect', { body: 'a user has disconnected' })
   })
 })
 
