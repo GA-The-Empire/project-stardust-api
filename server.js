@@ -38,8 +38,8 @@ const app = express()
 
 // Acquire http for socket.io
 // Acquire socket.io from http
-const socket = require('socket.io')
-const io = socket()
+const socketIO = require('socket.io')
+const io = socketIO()
 
 // set CORS headers on response from this API using the `cors` NPM package
 // `CLIENT_ORIGIN` is an environment variable that will be set on Heroku
@@ -74,17 +74,18 @@ app.use(uploadRoutes)
 
 // Emit message to all users on chat message
 io.on('connection', (socket) => {
-  socket.emit('your id', socket.id)
+  socket.emit('your id', { id: socket.id, body: 'a user has connected' })
+  console.log('a user has connected')
+  // io.emit('connect', { body: 'a user has connected' })
 
-  socket.on('connection', () => {
-    io.emit('connection', { body: 'a user has connected' })
-  })
   socket.on('send message', (msg) => {
     io.emit('message', msg)
   })
-  socket.on('disconnect', (socket) => {
-    socket.broadcast.emit('disconnect', { body: 'a user has disconnected' })
+  socket.on('disconnect', () => {
+    console.log(socket)
+    io.emit('disconnect', { body: 'a user has disconnected' })
   })
+
 })
 
 // register error handling middleware
