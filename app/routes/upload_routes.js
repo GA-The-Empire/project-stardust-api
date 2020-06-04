@@ -9,7 +9,6 @@ const router = express.Router()
 router.post('/uploads', upload.single('image'), (req, res, next) => {
   s3Upload(req.file)
     .then(s3ResponseData => {
-      console.log(s3ResponseData)
       return Upload.create({
         title: req.body.title,
         path: s3ResponseData.Location
