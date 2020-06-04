@@ -9,6 +9,9 @@ const bcrypt = require('bcrypt')
 // see above for explanation of "salting", 10 rounds is recommended
 const bcryptSaltRounds = 10
 
+// Remove the blank fields
+const removeBlanks = require('../../lib/remove_blank_fields')
+
 // pull in error types and the logic to handle them and set status codes
 const errors = require('../../lib/custom_errors')
 
@@ -37,7 +40,7 @@ router.post('/profile', requireToken, (req, res, next) => {
       // user.profile.save()
       return user.save()
     })
-    .then(profile => res.status(201).json({ profile: profile.toObject() }))
+    .then(profile => res.status(201).json({ user: profile.toObject() }))
     .catch(next)
 })
 
@@ -50,11 +53,14 @@ router.get('/profile/:id', (req, res, next) => {
 })
 
 // UPDATE PROFILE
-router.patch('/profile/:id', (req, res, next) => {
+router.patch('/profile/:id', requireToken, removeBlanks, (req, res, next) => {
   const id = req.params.id
   const profileData = req.body.user.profile
   User.findById(id)
     .then(user => {
+      console.log(`This is the user: ${user}`)
+      console.log(`This is the user Profile: ${user.profile}`)
+      console.log(`This is the profile data: ${profileData}`)
       Object.assign(user.profile, profileData)
       return user.save()
     })
@@ -63,7 +69,7 @@ router.patch('/profile/:id', (req, res, next) => {
 })
 
 // DESTROY PROFILE
-router.delete('/profile/:id', (req, res, next) => {
+router.delete('/profile/:id', requireToken, (req, res, next) => {
   const id = req.params.id
   const blankProfile = {
     about: '',

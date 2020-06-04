@@ -76,20 +76,11 @@ app.use(uploadRoutes)
 
 // Emit message to all users on chat message
 io.on('connection', (socket) => {
-  socket.emit('your id', { id: socket.id, body: 'a user has connected' })
-  console.log('a user has connected')
-  // io.emit('connect', { body: 'a user has connected' })
-
+  socket.emit('your id', { id: socket.id })
   socket.on('send message', (msg) => {
     io.emit('message', msg)
   })
-  socket.on('disconnect', () => {
-    console.log(socket)
-    io.emit('disconnect', { body: 'a user has disconnected' })
-  })
-
 })
-
 // register error handling middleware
 // note that this comes after the route middlewares, because it needs to be
 // passed any error messages from them
