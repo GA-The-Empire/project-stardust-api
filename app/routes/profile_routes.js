@@ -24,7 +24,7 @@ router.post('/profile', requireToken, (req, res, next) => {
       // user.profile.save()
       return user.save()
     })
-    .then(profile => res.status(201).json({ user: profile.toObject() }))
+    .then(user => res.status(201).json({ user: user.toObject() }))
     .catch(next)
 })
 
@@ -32,7 +32,7 @@ router.post('/profile', requireToken, (req, res, next) => {
 router.get('/profile/:id', (req, res, next) => {
   const id = req.params.id
   User.findById(id)
-    .then(user => res.json({ profile: user.profile.toObject() }))
+    .then(user => res.json({ user: user.toObject() }))
     .catch(next)
 })
 
@@ -45,7 +45,7 @@ router.patch('/profile/:id', requireToken, removeBlanks, (req, res, next) => {
       Object.assign(user.profile, profileData)
       return user.save()
     })
-    .then(() => res.sendStatus(204))
+    .then(user => res.status(200).json({ user: user.toObject() }))
     .catch(next)
 })
 
