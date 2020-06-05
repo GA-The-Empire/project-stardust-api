@@ -64,7 +64,7 @@ router.delete('/profile/:id', requireToken, (req, res, next) => {
       user.profile = blankProfile
       return user.save()
     })
-    .then(() => res.sendStatus(204))
+    .then(user => res.status(200).json({ user: user.toObject() }))
     // on error respond with 500 and error message
     .catch(next)
 })

@@ -105,9 +105,9 @@ These are the data format for the api calls
 | PURPOSE | EXTENSION | VERB | TOKEN REQUIRED | RETURN OBJECT | RETURN STATUS |
 | --- | --- | --- | --- | --- | --- |
 | Create | '/profile' | 'POST' | YES | User Object | 201 |
-| Show | '/profile/:id' | 'GET' | NO | User.profile Object | None |
-| Update | '/profile/:id' | 'PATCH' | YES | NONE | 204 |
-| Reset | '/profile/:id' | 'DELETE' | YES | None | 204 |
+| Show | '/profile/:id' | 'GET' | NO | User Object | None |
+| Update | '/profile/:id' | 'PATCH' | YES | user | 204 |
+| Reset | '/profile/:id' | 'DELETE' | YES | user | 200 |
 
 These are the data format for the api calls
 
